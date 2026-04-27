@@ -1,0 +1,393 @@
+clear;clc;close all;
+%% Load data
+dataname = '17-AH-all_result';
+load(['./',dataname,'.mat']);
+load(['./','AP0,6mm_recode','.mat']);
+%% parameters
+cellnum = size(dff_sig,1);
+timepoint = size(dff_sig,2);
+AP = 0;
+bin = [61 90];
+binsize = bin(2)-bin(1)+1;
+bia = 462;
+%% 第一部分：area distribution
+mask_neuron = zeros(2048,2048);
+for i = 1:cellnum
+    for j = 1:length(properties{i}.coords)
+        mask_neuron(properties{i}.coords(j,1)+1,properties{i}.coords(j,2)+1) = 255;
+    end
+end
+mask = fliplr(L');
+mask = circshift(mask,40);
+mask = circshift(mask,10,2);
+% mask = imrotate(mask,5);
+preview = imadd(mask*8,uint8(mask_neuron)); figure(1);imshow(preview);
+if AP == -1
+    areanum = 16;
+    areaname = {'ACA' 'MOs','MOp','SSp_ul','SSp_II','SSp_un','SSp_bfd',...
+    'SSp_tr','VISa','VISam','VISpm','VISrl','VISp','RSPagl','RSPd','RSPv'};
+elseif AP == 0
+    areanum = 13;
+    areaname = {'PL','ACA','MOs','MOp','SSp_ul','SSp_II','SSp_un',...
+        'SSp_tr','VISa','VISam','RSPagl','RSPd','RSPv'};
+    M_index = [3,4];
+    S_index = [5,6,7,8];
+    V_index = [9,10];
+    RSP_index = [11,12,13];
+end
+for i = 1:length(spike_time_estimates)
+    baseline = sum(spike_time_estimates{i}>0&spike_time_estimates{i}<2000)/1999;
+    active_level = 0;
+    for j = 1:10
+            active_level = active_level + sum((spike_time_estimates{i}>2298+(j-1)*462+1)& ...
+            (spike_time_estimates{i}<2298+(j-1)*462+115));
+    end
+    active_level = active_level/1150;
+    if active_level>2*baseline
+        active_cell = [active_cell,i];
+    end
+end
+%% 创建对应不同脑区的变量并统计每个脑区有多少神经元
+for i = 1:areanum
+    eval([areaname{i},'=','[];']);
+end
+for i = 1:cellnum
+    whicharea = mask(floor(properties{i}.centroid(1)),floor(properties{i}.centroid(2)));
+    if whicharea~=0
+        eval([areaname{whicharea},'=','[',areaname{whicharea},',',num2str(i),'];']);
+    end
+end
+%% 将不同脑区的统计数据放在一个元胞数组里面
+area_distribution = cell(2,areanum);
+for i = 1:areanum
+    area_distribution{1,i} = areaname{i};
+    area_distribution{2,i} = eval(areaname{i});
+end
+%% 画统计图
+neurons = zeros(1,areanum);
+for i = 1:areanum
+    neurons(i) = numel(area_distribution{2,i});
+    area_distribution{3,i} =  neurons(i);
+end
+figure(2);bar(categorical(area_distribution(1,:)),neurons);
+area_distribution = area_distribution';
+%% 第二部分：把所有trial的信号统一到一个矩阵里面，用来画热图
+time1 = zeros(10,1);time2 = zeros(10,1);
+cellnum = length(spike_time_estimates);
+spk_alltrial=zeros(10*cellnum,268);
+for trial=1:10 %取airpuff的前10 中间15s直到刺激完后10s先绘图看看具体的airpuff位置
+    time1(trial) = (trial-1)*bia+2298-77+1;
+    time2(trial) = (trial-1)*bia+2298+115+76;
+    spk_alltrial((trial-1)*cellnum+1:trial*cellnum,:)=spk_sig(:,time1(trial):time2(trial));
+end
+figure(3),imagesc(spk_alltrial);clim([-0.05 0.5]);
+%% 第三部分：baseline和十次trial期间的spikerate（条形图,单位spk/s,输出为spk_rate_10trials和spk_rate_base）
+time1 = time1 + bin(1);
+time2 = time1 + bin(2)-bin(1);
+spike_time_martix = zeros(cellnum,timepoint);
+for i=1:cellnum    %生成包含所有动作电位spike的矩阵
+    for j = 1:timepoint
+        spike_time_martix(i,j)=sum(spike_time_estimates{i}==j);
+    end
+end
+spk_rate_10trials = zeros(10,1);
+for trial = 1:10   %统计每次气吹时间段内的动作电位频率
+    spk_rate_10trials(trial) = sum(spike_time_martix(:,time1(trial):time2(trial)),'all')/...
+        (binsize)/cellnum*7.67; 
+end
+spk_rate_base = sum(spike_time_martix(:,1:2000),'all')/...
+        2000/cellnum*7.67; 
+spk_rate_all = [spk_rate_base;spk_rate_10trials];
+figure(4);bar(spk_rate_all);
+%% 第四部分：tran_hist_all_trial
+tran_hist_all_trial_temp = zeros(16,30,10);
+centroid = zeros(cellnum,2);    
+for n = 1:cellnum
+    centroid(n,:) = properties{n}.centroid;
+end
+x = centroid(:,1);
+y = centroid(:,2);
+for trial = 1:10
+    for i =1:16
+        tran_hist_all_trial_temp(i,:,trial) = mean(spk_sig(y>=(i-1)*128&y<i*128,time1(trial):time2(trial)),1);
+    end
+end
+tran_hist_all_trial = zeros(16,15,10);
+for i = 1:10
+    [M idx] = max(tran_hist_all_trial_temp(:,15:23,i),[],2);
+    center = mode(idx+14);
+    tran_hist_all_trial(:,:,i) = tran_hist_all_trial_temp(:,center-7:center+7,i);
+end
+tran_hist_all_trial = tran_hist_all_trial./max(tran_hist_all_trial,[],2);
+%% plot tran_hist for trial 1
+figure(5);subplot(2,1,1);
+set(gcf,'Position', [700, 0, 700, 1400]);
+x = linspace(3,-3,16)';
+y = linspace(-0.75,0.75,30)';
+barfig = bar3(x,tran_hist_all_trial(:,:,1));view(220,50);
+set(barfig,'LineWidth',2);
+set(gca,'Gridcolor','black');set(gca,'GridLineWidth',0.5');
+set(gca, 'GridAlpha', 1);  % 半透明
+set(gca, 'Fontname','Arial','FontSize',16);
+ylim([-3.5 3.5]);
+hx = xlabel('', 'FontSize', 16, 'FontName', 'Arial','Rotation',43);
+hy = ylabel([' ' ...
+    ''], 'FontSize', 16, 'FontName', 'Arial','Rotation', -45);
+set(hx, 'Position', [5, -5, -2]);  % X 轴标题位置
+set(hy, 'Position', [-5, 5, -2]);  % Y 轴标题位置
+% zlabel('Spike probability(A.U.)', 'FontSize', 20, 'FontName', 'Arial');
+set(gca, 'LineWidth', 2);
+set(gca, 'XTickLabel', {'-1', '0', '1'}); % 用字符替代数字
+set(gca, 'XTick', linspace(1, 15, 3)); 
+set(gca, 'YTick', linspace(-3, 3, 3)); 
+colormap sky;
+daspect([2,1,0.15]);
+%% plot tran_hist for trial 10
+subplot(2,1,2);
+x = linspace(3,-3,16)';
+y = linspace(-0.75,0.75,30)';
+barfig = bar3(x,tran_hist_all_trial(:,:,10));view(220,50);
+set(barfig,'LineWidth',2);
+set(gca,'Gridcolor','black');set(gca,'GridLineWidth',0.5');
+set(gca, 'GridAlpha', 1);  % 半透明
+set(gca, 'Fontname','Arial','FontSize',16);
+ylim([-3.5 3.5]);
+hx = xlabel('', 'FontSize', 16, 'FontName', 'Arial','Rotation',43);
+hy = ylabel([' ' ...
+    ''], 'FontSize', 16, 'FontName', 'Arial','Rotation', -45);
+set(hx, 'Position', [5, -5, -2]);  % X 轴标题位置
+set(hy, 'Position', [-5, 5, -2]);  % Y 轴标题位置
+% zlabel('Spike probability(A.U.)', 'FontSize', 20, 'FontName', 'Arial');
+set(gca, 'LineWidth', 2);
+set(gca, 'XTickLabel', {'-1', '0', '1'}); % 用字符替代数字
+set(gca, 'XTick', linspace(1, 15, 3)); 
+set(gca, 'YTick', linspace(-3, 3, 3)); 
+colormap sky;
+daspect([2,1,0.15]);
+%% 第五部分：统计所有信号在十次trial之间的CCA相关系数
+CCA_trial_martix = zeros(10,10);%（trial次数，trial次数，mode个数）
+for trial1 = 1:10
+    for trial2 = 1:10
+        X = spk_sig(:,time1(trial1):time2(trial1));
+        Y = spk_sig(:,time1(trial2):time2(trial2));
+        [wxMat,wyMat,rVec]=SparseCCA(X',Y',1,1,2,1);
+        CCA_trial_martix(trial1,trial2) = rVec;
+    end
+end
+temp = [];
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            temp = [temp,CCA_trial_martix(i,j)];
+        end
+    end
+end
+maxvalue=max(temp,[],'all');
+minvalue=min(temp,[],'all');
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            CCA_trial_martix(i,j)=(CCA_trial_martix(i,j)-minvalue)/(maxvalue-minvalue);
+        end
+    end
+end
+%% 第五部分：处理模式的改变，是各脑区微小累积的还是某个或者某些脑区导致的,输出CCA_trial_martix_脑区与spk_alltrial_脑区
+% （对比不同trial同脑区的活动模式）
+% 首先提取不同脑区的活动
+M=[];S=[];V=[];RSP=[];
+for i = 1:length(M_index)
+    M = [M;spk_sig(area_distribution{M_index(i),2},:)];
+end
+for i = 1:length(S_index)
+    S = [S;spk_sig(area_distribution{S_index(i),2},:)];
+end
+for i = 1:length(V_index)
+    V = [V;spk_sig(area_distribution{V_index(i),2},:)];
+end
+for i = 1:length(RSP_index)
+    RSP = [RSP;spk_sig(area_distribution{RSP_index(i),2},:)];
+end
+cellnum_M = size(M,1);cellnum_S = size(S,1);
+cellnum_V = size(V,1);cellnum_RSP = size(RSP,1);
+spk_alltrial_M = zeros(10*cellnum_M,binsize);spk_alltrial_S = zeros(10*cellnum_S,binsize);
+spk_alltrial_V = zeros(10*cellnum_V,binsize);spk_alltrial_RSP = zeros(10*cellnum_RSP,binsize);
+for trial=1:10 %取airpuff的前10 中间15s直到刺激完后10s先绘图看看具体的airpuff位置
+    spk_alltrial_M((trial-1)*cellnum_M+1:trial*cellnum_M,:)=M(:,time1(trial):time2(trial));
+end
+for trial=1:10 %取airpuff的前10 中间15s直到刺激完后10s先绘图看看具体的airpuff位置
+    spk_alltrial_S((trial-1)*cellnum_S+1:trial*cellnum_S,:)=S(:,time1(trial):time2(trial));
+end
+for trial=1:10 %取airpuff的前10 中间15s直到刺激完后10s先绘图看看具体的airpuff位置
+    spk_alltrial_V((trial-1)*cellnum_V+1:trial*cellnum_V,:)=V(:,time1(trial):time2(trial));
+end
+for trial=1:10 %取airpuff的前10 中间15s直到刺激完后10s先绘图看看具体的airpuff位置
+    spk_alltrial_RSP((trial-1)*cellnum_RSP+1:trial*cellnum_RSP,:)=RSP(:,time1(trial):time2(trial));
+end
+% figure('Name','M'),imagesc(spk_alltrial_M);clim([0 0.5]);
+% figure('Name','S'),imagesc(spk_alltrial_S);clim([0 0.5]);
+% figure('Name','V'),imagesc(spk_alltrial_V);clim([0 0.5]);
+% figure('Name','RSP'),imagesc(spk_alltrial_RSP);clim([0 0.5]);
+% 然后对每个脑区神经元的信号做trial之间的CCA，看看处理模式的改变和哪些脑区有关
+CCA_trial_martix_M = zeros(10,10,5);CCA_trial_martix_S = zeros(10,10,5);
+CCA_trial_martix_V = zeros(10,10,5);CCA_trial_martix_RSP = zeros(10,10,5);
+for trial1=1:10
+    for trial2 = 1:10
+        X = spk_alltrial_M((trial1-1)*cellnum_M+1:trial1*cellnum_M,:);
+        Y = spk_alltrial_M((trial2-1)*cellnum_M+1:trial2*cellnum_M,:);
+        [wxMat,wyMat,rVec]=SparseCCA(X',Y',1,1,2,1);
+        CCA_trial_martix_M(trial1,trial2,:) = rVec;
+    end
+end
+for trial1=1:10
+    for trial2 = 1:10
+        X = spk_alltrial_S((trial1-1)*cellnum_S+1:trial1*cellnum_S,:);
+        Y = spk_alltrial_S((trial2-1)*cellnum_S+1:trial2*cellnum_S,:);
+        [wxMat,wyMat,rVec]=SparseCCA(X',Y',1,1,2,1);
+        CCA_trial_martix_S(trial1,trial2,:) = rVec;
+    end
+end
+for trial1=1:10
+    for trial2 = 1:10
+        X = spk_alltrial_V((trial1-1)*cellnum_V+1:trial1*cellnum_V,:);
+        Y = spk_alltrial_V((trial2-1)*cellnum_V+1:trial2*cellnum_V,:);
+        [wxMat,wyMat,rVec]=SparseCCA(X',Y',1,1,2,1);
+        CCA_trial_martix_V(trial1,trial2,:) = rVec;
+    end
+end
+for trial1=1:10
+    for trial2 = 1:10
+        X = spk_alltrial_RSP((trial1-1)*cellnum_RSP+1:trial1*cellnum_RSP,:);
+        Y = spk_alltrial_RSP((trial2-1)*cellnum_RSP+1:trial2*cellnum_RSP,:);
+        [wxMat,wyMat,rVec]=SparseCCA(X',Y',1,1,2,1);
+        CCA_trial_martix_RSP(trial1,trial2,:) = rVec;
+    end
+end
+temp = [];
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            temp = [temp,CCA_trial_martix_M(i,j)];
+        end
+    end
+end
+maxvalue=max(temp,[],'all');
+minvalue=min(temp,[],'all');
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            CCA_trial_martix_M(i,j)=(CCA_trial_martix_M(i,j)-minvalue)/(maxvalue-minvalue);
+        end
+    end
+end
+temp = [];
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            temp = [temp,CCA_trial_martix_S(i,j)];
+        end
+    end
+end
+maxvalue=max(temp,[],'all');
+minvalue=min(temp,[],'all');
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            CCA_trial_martix_S(i,j)=(CCA_trial_martix_S(i,j)-minvalue)/(maxvalue-minvalue);
+        end
+    end
+end
+temp = [];
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            temp = [temp,CCA_trial_martix_V(i,j)];
+        end
+    end
+end
+maxvalue=max(temp,[],'all');
+minvalue=min(temp,[],'all');
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            CCA_trial_martix_V(i,j)=(CCA_trial_martix_V(i,j)-minvalue)/(maxvalue-minvalue);
+        end
+    end
+end
+temp = [];
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            temp = [temp,CCA_trial_martix_RSP(i,j)];
+        end
+    end
+end
+maxvalue=max(temp,[],'all');
+minvalue=min(temp,[],'all');
+for i = 1:10
+    for j = 1:10
+        if i ~=j
+            CCA_trial_martix_RSP(i,j)=(CCA_trial_martix_RSP(i,j)-minvalue)/(maxvalue-minvalue);
+        end
+    end
+end
+figure(6);set(gcf,'Position', [0, 400, 2000, 200]);
+subplot(1,5,1);heatmap(CCA_trial_martix);clim([0.4 0.8]);
+subplot(1,5,2);heatmap(CCA_trial_martix_M(:,:,1));clim([0.4 0.8]);
+subplot(1,5,3);heatmap(CCA_trial_martix_S(:,:,1));clim([0.4 0.8]);
+subplot(1,5,4);heatmap(CCA_trial_martix_V(:,:,1));clim([0.4 0.8]);
+subplot(1,5,5);heatmap(CCA_trial_martix_RSP(:,:,1));colormap jet;clim([0.4 0.8]);
+%% 第六部分：用来做不同脑区的CCAmode投影图，每个脑区交叉计算CCAmode并取投影的平均
+% 用的是spk_sig
+S_changemartix = zeros(cellnum_S,10);
+M_changemartix = zeros(cellnum_M,10);
+V_changemartix = zeros(cellnum_V,10);
+RSP_changemartix = zeros(cellnum_RSP,10);
+for which_trial = 1:10
+    S_trial = S(:,time1(which_trial):time2(which_trial));
+    M_trial = M(:,time1(which_trial):time2(which_trial));
+    V_trial = V(:,time1(which_trial):time2(which_trial));
+    RSP_trial = RSP(:,time1(which_trial):time2(which_trial));
+    [VSx,VSy,rVec]=SparseCCA(V_trial',S_trial',1,1,2,1);
+    [VMx,VMy,rVec]=SparseCCA(V_trial',M_trial',1,1,2,1);
+    [VRSPx,VRSPy,rVec]=SparseCCA(V_trial',RSP_trial',1,1,2,1);
+    [SMx,SMy,rVec]=SparseCCA(M_trial',S_trial',1,1,2,1);
+    [SRSPx,SRSPy,rVec]=SparseCCA(RSP_trial',S_trial',1,1,2,1);
+    [MRSPx,MRSPy,rVec]=SparseCCA(M_trial',RSP_trial',1,1,2,1);
+    for mode = 1
+        S_CCA_sig = (S_trial'*VSy(:,mode)*VSy(:,mode)'+S_trial'*SMy(:,mode)*SMy(:,mode)'+S_trial'*SRSPy(:,mode)*SRSPy(:,mode)')'./3;
+        M_CCA_sig = (M_trial'*VMy(:,mode)*VMy(:,mode)'+M_trial'*SMx(:,mode)*SMx(:,mode)'+M_trial'*MRSPx(:,mode)*MRSPx(:,mode)')'./3;
+        V_CCA_sig = (V_trial'*VSx(:,mode)*VSx(:,mode)'+V_trial'*VMx(:,mode)*VMx(:,mode)'+V_trial'*VRSPx(:,mode)*VRSPx(:,mode)')'./3;
+        RSP_CCA_sig = (RSP_trial'*VRSPy(:,mode)*VRSPy(:,mode)'+RSP_trial'*SRSPx(:,mode)*SRSPx(:,mode)'+RSP_trial'*MRSPy(:,mode)*MRSPy(:,mode)')'./3;
+        S_changemartix(:,which_trial) = (abs(VSy)+abs(SMy)+abs(SRSPy))./3;
+        M_changemartix(:,which_trial) = (abs(SMx)+abs(VMy)+abs(MRSPx))./3;
+        V_changemartix(:,which_trial) = (abs(VSx)+abs(VMx)+abs(VRSPx))./3;
+        RSP_changemartix(:,which_trial) = (abs(SRSPx)+abs(MRSPy)+abs(VRSPy))./3;
+        figure(7);subplot(10,1,which_trial);imagesc(S_CCA_sig);box off;axis off;
+        clim([0 0.5])
+        figure(8);subplot(10,1,which_trial);imagesc(M_CCA_sig);box off;axis off;
+        clim([0 0.5])
+        figure(9);subplot(10,1,which_trial);imagesc(V_CCA_sig);box off;axis off;
+        clim([0 0.5])
+        figure(10);subplot(10,1,which_trial);imagesc(RSP_CCA_sig);box off;axis off;
+        clim([0 0.5])
+    end
+end
+S_changemartix = sig_sort(S_changemartix,4);
+M_changemartix = sig_sort(M_changemartix,4);
+V_changemartix = sig_sort(V_changemartix,4);
+RSP_changemartix = sig_sort(RSP_changemartix,4);
+%% 第七部分：
+figure(11);
+subplot(1,4,1);imagesc(M_changemartix);
+subplot(1,4,2);imagesc(S_changemartix);
+subplot(1,4,3);imagesc(V_changemartix);
+subplot(1,4,4);imagesc(RSP_changemartix);
+[coeff, scoreS, latent, tsquared, explained, mu] = pca(S_changemartix');
+[coeff, scoreM, latent, tsquared, explained, mu] = pca(M_changemartix');
+[coeff, scoreV, latent, tsquared, explained, mu] = pca(V_changemartix');
+[coeff, scoreRSP, latent, tsquared, explained, mu] = pca(RSP_changemartix');
+figure(12);
+subplot(4,1,1);plot(scoreS([1,2,3,4,5,6,7,8,9,10],1));
+subplot(4,1,2);plot(scoreM([1,2,3,4,5,6,7,8,9,10],1));
+subplot(4,1,3);plot(scoreV([1,2,3,4,5,6,7,8,9,10],1));
+subplot(4,1,4);plot(scoreRSP([1,2,3,4,5,6,7,8,9,10],1));
