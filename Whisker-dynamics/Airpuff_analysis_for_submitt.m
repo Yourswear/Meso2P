@@ -309,7 +309,27 @@ for trial1 = 1:10
         CCA_trial_martix_RSP(trial1,trial2,:) = rVec;
     end
 end
+<<<<<<< HEAD
 figure(6); set(gcf,'Position', [0, 400, 2000, 200]);
+=======
+<<<<<<< HEAD
+figure(6); set(gcf,'Position', [0, 400, 2000, 200]);
+=======
+<<<<<<< HEAD
+figure(6); set(gcf,'Position', [0, 400, 2000, 200]);
+=======
+Norm_M = CCA_trial_martix_M(:,:,1);
+Norm_M = (Norm_M-min(Norm_M,[],'all'))./(1-min(Norm_M,[],'all'));
+Norm_S = CCA_trial_martix_S(:,:,1);
+Norm_S = (Norm_S-min(Norm_S,[],'all'))./(1-min(Norm_S,[],'all'));
+Norm_V = CCA_trial_martix_V(:,:,1);
+Norm_V = (Norm_V-min(Norm_V,[],'all'))./(1-min(Norm_V,[],'all'));
+Norm_RSP = CCA_trial_martix_RSP(:,:,1);
+Norm_RSP = (Norm_RSP-min(Norm_RSP,[],'all'))./(1-min(Norm_RSP,[],'all'));
+figure(10); set(gcf,'Position', [0, 400, 2000, 200]);
+>>>>>>> 6b8e9f1 (Meso2P)
+>>>>>>> 7a3fd0b (20260626)
+>>>>>>> f6ad8fc (20260627)
 subplot(1,5,1); heatmap(CCA_trial_martix); clim([0.4 0.8]); title('All');
 subplot(1,5,2); heatmap(CCA_trial_martix_M(:,:,1)); clim([0.4 0.8]); title('Motor');
 subplot(1,5,3); heatmap(CCA_trial_martix_S(:,:,1)); clim([0.4 0.8]); title('Somatosensory');
@@ -360,10 +380,29 @@ for which_trial = 1:10
         RSP_changemartix(:,which_trial) = (abs(SRSPx) + abs(MRSPy) + abs(VRSPy))./3;
         
         % Plot region-specific CCA projections
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 7a3fd0b (20260626)
+>>>>>>> f6ad8fc (20260627)
         figure(7); subplot(10,1,which_trial); imagesc(S_CCA_sig); box off; axis off; clim([0 0.5])
         figure(8); subplot(10,1,which_trial); imagesc(M_CCA_sig); box off; axis off; clim([0 0.5])
         figure(9); subplot(10,1,which_trial); imagesc(V_CCA_sig); box off; axis off; clim([0 0.5])
         figure(10); subplot(10,1,which_trial); imagesc(RSP_CCA_sig); box off; axis off; clim([0 0.5])
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+        figure(11); subplot(10,1,which_trial); imagesc(S_CCA_sig); box off; axis off; clim([0 0.5])
+        figure(12); subplot(10,1,which_trial); imagesc(M_CCA_sig); box off; axis off; clim([0 0.5])
+        figure(13); subplot(10,1,which_trial); imagesc(V_CCA_sig); box off; axis off; clim([0 0.5])
+        figure(14); subplot(10,1,which_trial); imagesc(RSP_CCA_sig); box off; axis off; clim([0 0.5])
+>>>>>>> 6b8e9f1 (Meso2P)
+>>>>>>> 7a3fd0b (20260626)
+>>>>>>> f6ad8fc (20260627)
     end
 end
 S_changemartix = sig_sort(S_changemartix,6);
@@ -372,7 +411,19 @@ V_changemartix = sig_sort(V_changemartix,6);
 RSP_changemartix = sig_sort(RSP_changemartix,6);
 
 %% Part 7: PCA analysis of cross-trial changes
+<<<<<<< HEAD
 figure(11);
+=======
+<<<<<<< HEAD
+figure(11);
+=======
+<<<<<<< HEAD
+figure(11);
+=======
+figure(15);
+>>>>>>> 6b8e9f1 (Meso2P)
+>>>>>>> 7a3fd0b (20260626)
+>>>>>>> f6ad8fc (20260627)
 subplot(1,4,1); imagesc(M_changemartix); title('Motor');
 subplot(1,4,2); imagesc(S_changemartix); title('Somatosensory');
 subplot(1,4,3); imagesc(V_changemartix); title('Visual');
@@ -385,7 +436,19 @@ subplot(1,4,4); imagesc(RSP_changemartix); title('Retrosplenial');
 [coeff, scoreRSP, latent, tsquared, explained, mu] = pca(RSP_changemartix');
 
 % Plot first principal component across trials
+<<<<<<< HEAD
 figure(12);
+=======
+<<<<<<< HEAD
+figure(12);
+=======
+<<<<<<< HEAD
+figure(12);
+=======
+figure(16);
+>>>>>>> 6b8e9f1 (Meso2P)
+>>>>>>> 7a3fd0b (20260626)
+>>>>>>> f6ad8fc (20260627)
 subplot(4,1,1); plot(scoreS(valid,1)); title('Somatosensory PC1');
 subplot(4,1,2); plot(scoreM(valid,1)); title('Motor PC1');
 subplot(4,1,3); plot(scoreV(valid,1)); title('Visual PC1');
