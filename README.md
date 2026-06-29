@@ -13,15 +13,35 @@ The code is organized into two main modules, corresponding to the two key experi
 - **`Anesthesia-propagation`** – Analysis scripts for the anesthesia experiment, tracking cortical activity propagation under anesthetic conditions.
 - **`Whisker-dynamics`** – Analysis scripts for the air-puff whisker stimulation experiment, characterizing whisker‑evoked dynamic responses.
 
-Each module contains fully documented Jupyter notebooks/Python scripts, along with pre-trained models and intermediate data processing pipelines to reproduce the figures and statistical results reported in the publication.
+Each module contains fully documented matlab scripts, along with intermediate data processing pipelines to reproduce the figures and statistical results reported in the publication.
 
 ## Getting Started
 
-Please refer to the individual module READMEs for detailed usage instructions, dependency lists, and step‑by‑step reproduction guides.
+### Data Download
+First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973](https://doi.org/10.5281/zenodo.20956973).
 
-## Citation
+### Whisker-dynamics (Air-puff stimulation)
+1. Place the downloaded files `17-AH-all_result.mat` and `AP0,6mm_recode.mat` into the `Whisker-dynamics/` folder.
+2. Run the script `Airpuff_analysis_for_submitt.m`.
+3. The script will generate 16 figures. Please insert your figures and their corresponding descriptions below:
 
-If you use this package in your research, please cite the original paper:
+- **Figure 1**: [Insert Figure 1] – [Description 1]
+- **Figure 2**: [Insert Figure 2] – [Description 2]
+...
+- **Figure 16**: [Insert Figure 16] – [Description 16]
+
+### Anesthesia-propagation (Anesthesia experiment)
+1. Place the downloaded file `17_induce_deep.mat` into the `Anesthesia-propagation/` folder (note: keep it in this module folder to maintain consistency with the repository structure).
+2. Run the script `Anesthesia_analysis_for_submitt.m`.
+3. The script will generate 4 figures. Please insert your figures and their corresponding descriptions below:
+
+- **Figure 1**: [Insert Figure 1] – [Description 1]
+...
+- **Figure 4**: [Insert Figure 4] – [Description 4]
+
+- ## Citation
+
+If you use these codes in your research, please cite the original paper:
 
 ```bibtex
 @article {Hu2025Meso2P,
