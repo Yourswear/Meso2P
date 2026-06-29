@@ -63,11 +63,14 @@ First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973]
 2. Run the script `Anesthesia_analysis_for_submitt.m`.
 3. The script will generate 4 figures:
 
-- **Figure 1**: [Insert Figure 1] – [Description 1]
-...
-- **Figure 4**: [Insert Figure 4] – [Description 4]
+- **Figure 1** – Mean spike probabilities during anesthesia induction  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Anethesia-propagation/Figure%201.png" height="150px">
+- **Figure 2** – Normalized global response delay. Standard deviation (SD) of peak times in spike probabilities across 16 anterior-posterior (AP) bins was computed during anesthesia progression  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Anethesia-propagation/Figure%202.png" width="400px">
+- **Figure 3** – Bar plot of normalized neuronal spike probability across anterior-posterior positions  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Anethesia-propagation/Figure%203.png" width="400px">
 
-- ## Citation
+## Citation
 
 If you use these codes in your research, please cite the original paper:
 
