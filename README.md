@@ -32,31 +32,31 @@ First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973]
 - **Figure 3** – Calcium signal heatmap across 10 trials
   <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%203.png" width="400px">
 - **Figure 4** – Spike rate statistics for control group and 10 trials  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%204.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%204.png" width="400px">
 - **Figure 5** – Normalized neuronal spike probabilities over time and position for trials 1 and 10. Bar plots show the normalized spike probability at each time point and anterior-posterior bin for the first (Trial 1) and last (Trial 10) trials.
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%205.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%205.png" width="400px">
 - **Figure 6** – Spike probabilities across 10 trials in M region  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%206.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%206.png" width="400px">
 - **Figure 7** – Spike probabilities across 10 trials in S region  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%207.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%207.png" width="400px">
 - **Figure 8** – Spike probabilities across 10 trials in V region  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%208.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%208.png" width="400px">
 - **Figure 9** – Spike probabilities across 10 trials in RSP region  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%209.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%209.png" width="400px">
 - **Figure 10** – Cross‑correlation coefficient matrix between brain regions across 10 trials  
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
 - **Figure 11** – The projected activity of S region in the CCA dimensions identified across 10 trials
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2011.png" width="400px">
 - **Figure 12** – The projected activity of M region in the CCA dimensions identified across 10 trials
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2012.png" width="400px">
 - **Figure 13** – The projected activity of V region in the CCA dimensions identified across 10 trials 
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2013.png" width="400px">
 - **Figure 14** – The projected activity of RSP region in the CCA dimensions identified across 10 trials
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2014.png" width="400px">
 - **Figure 15** – Heatmap of neuronal loading weights across trials
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2015.png" width="400px">
 - **Figure 16** – PC1 derived from PCA of neuronal loading weight matrices. 
-<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="400px">
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2016.png" width="400px">
 
 ### Anesthesia-propagation (Anesthesia experiment)
 1. Place the downloaded file `17_induce_deep.mat` into the `Anesthesia-propagation/` folder (note: keep it in this module folder to maintain consistency with the repository structure).
