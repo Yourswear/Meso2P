@@ -23,7 +23,7 @@ First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973]
 ### Whisker-dynamics (Air-puff stimulation)
 1. Place the downloaded files `17-AH-all_result.mat` and `AP0,6mm_recode.mat` into the `Whisker-dynamics/` folder.
 2. Run the script `Airpuff_analysis_for_submitt.m`.
-3. The script will generate 16 figures. Please insert your figures and their corresponding descriptions below:
+3. The script will generate 16 figures:
 
 - **Figure 1** – Atlas alignment calibration pattern  
   <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%201.png" width="512px">
