@@ -25,10 +25,26 @@ First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973]
 2. Run the script `Airpuff_analysis_for_submitt.m`.
 3. The script will generate 16 figures. Please insert your figures and their corresponding descriptions below:
 
-- **Figure 1**: [Insert Figure 1] – [Description 1]
-- **Figure 2**: [Insert Figure 2] – [Description 2]
-...
-- **Figure 16**: [Insert Figure 16] – [Description 16]
+- **Figure 1** – Atlas alignment calibration pattern  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%201.png" width="512px">
+- **Figure 2** – Distribution of neuronal counts across different brain regions  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%202.png" width="512px">
+- **Figure 3** – Distribution of neuronal counts across different brain regions  
+  <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%203.png" width="512px">
+- **Figure 4** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%204.png" width="512px">
+- **Figure 5** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%205.png" width="512px">
+- **Figure 6** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%206.png" width="512px">
+- **Figure 7** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%207.png" width="512px">
+- **Figure 8** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%208.png" width="512px">
+- **Figure 9** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%209.png" width="512px">
+- **Figure 10** – Distribution of neuronal counts across different brain regions  
+<img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%2010.png" width="512px">
 
 ### Anesthesia-propagation (Anesthesia experiment)
 1. Place the downloaded file `17_induce_deep.mat` into the `Anesthesia-propagation/` folder (note: keep it in this module folder to maintain consistency with the repository structure).
