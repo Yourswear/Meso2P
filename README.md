@@ -33,7 +33,7 @@ First, download the required test dataset from Zenodo: [10.5281/zenodo.20956973]
   <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%203.png" width="400px"> 
 - **Figure 4** – Spike rate statistics for control group and 10 trials  
    <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%204.png" width="400px">
-- **Figure 5** – Normalized neuronal spike probabilities over time and position for trials 1 and 10. Bar plots show the normalized spike probability at each time point and anterior-posterior bin for the first (Trial 1) and last (Trial 10) trials.
+- **Figure 5** – Normalized neuronal spike probabilities over time and position for trials 1 and 10. Bar plots show the normalized spike probability at each time point and anterior-posterior bin for the first (Trial 1) and last (Trial 10) trials.  
   <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%205.png" width="400px">
 - **Figure 6** – Spike probabilities across 10 trials in M region  
   <img src="https://github.com/Yourswear/Meso2P/blob/master/Whisker-dynamics/Figure%206.png" width="400px">
